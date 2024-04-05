@@ -69,7 +69,7 @@ test("Login Automation First", async ({browser})=> {
 	const titles = await page.locator("h5 b").allTextContents();
 	console.log(titles);
 
-	await page.pause();
+	//await page.pause();
 
 });
 
@@ -95,11 +95,11 @@ test("UI Controls", async ({page}) => {
 
 	
 
-	await page.pause();
+	//await page.pause();
 
 });
 
-test.only("Child Windows Handle", async ({browser}) => {
+test("Child Windows Handle", async ({browser}) => {
 
 	const context = await browser.newContext();
 	const page = await context.newPage();
@@ -116,10 +116,9 @@ test.only("Child Windows Handle", async ({browser}) => {
 	console.log(textIs);
 	const arrayText = textIs.split("@");
 	const domain = arrayText[1].split(" ")[0];
+	console.log(domain);
 	await page.locator("#username").fill(domain);
 
-	await page.pause();
-
-
+	//await page.pause();
 
 });
