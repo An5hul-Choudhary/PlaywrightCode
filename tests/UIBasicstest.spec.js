@@ -122,3 +122,44 @@ test("Child Windows Handle", async ({browser}) => {
 	//await page.pause();
 
 });
+
+
+test.only("End to End flow", async ({browser}) => {
+
+
+	const context =await browser.newContext();
+    const page = await context.newPage();
+    await page.goto("https://rahulshettyacademy.com/client");
+
+	const email = page.locator("#userEmail");
+	const password = page.locator("#userPassword");
+	const products = page.locator(".card-body");
+	const addProducts = "ADIDAS ORIGINAL";
+
+	await email.fill("anshika222@gmail.com");
+	await password.fill("Iamking@000");
+	await page.locator("#login").click();
+	await page.waitForLoadState('networkidle');      
+
+	const titles = await page.locator("h5 b").allTextContents();
+	console.log(titles);
+
+	//number of products
+	const count = await products.count();
+
+	for(let i=0; i<count; i++){
+		if(await products.locator("b").nth(i).textContent() === addProducts){
+			await products.nth(i).locator("button").last().click();
+			break;
+		}
+	}
+
+	await page.locator("[routerlink*='cart']").click();
+	await page.locator("div li").last().waitFor();
+	const bool = await page.locator("h3:has-text('ADIDAS ORIGINAL')").isVisible();
+	expect(bool).toBeTruthy();
+	
+
+	await page.pause();
+
+});
