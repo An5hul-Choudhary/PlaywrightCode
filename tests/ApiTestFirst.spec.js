@@ -1,19 +1,18 @@
 const {test, expect, request} = require('@playwright/test')
-
+const {ApiUtils} = require('./Utils/ApiUtils')
 const requestPayload = {userEmail: "anshika222@gmail.com", userPassword: "Iamking@000"};
 let token;
-test.beforeAll( async() => {
-    const apiContext = await request.newContext();
-    const loginResponse = await apiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login",
-    {
-        data: requestPayload
-    })
-    expect(loginResponse.ok()).toBeTruthy();
-    const loginResponseJson = await loginResponse.json();
-    token = loginResponseJson.token;
+const orderApiRequestPayload = {orders: [{country: "Cuba", productOrderedId: "6581ca979fd99c85e8ee7faf"}]};
+let orderId;
 
-    console.log(token);
-})
+let response;
+test.beforeAll( async() => {
+
+    const apiContext = await request.newContext();
+    const apiUtils = new ApiUtils(apiContext, requestPayload);
+    response = await apiUtils.createOrder(orderApiRequestPayload);
+   
+});
 
 test("Login Using API", async ({page}) => {
     //js file- Login js, DashboardPage
@@ -23,7 +22,7 @@ test("Login Using API", async ({page}) => {
     await page.addInitScript(value => {
 
          window.localStorage.setItem('token', value);
-    }, token);
+    }, response.token);
 
     const email = "anshika222@gmail.com";
     const productName = 'ADIDAS ORIGINAL';
@@ -33,6 +32,8 @@ test("Login Using API", async ({page}) => {
     // await page.locator("#userPassword").fill("Iamking@000");
     // await page.locator("[value='Login']").click();
     // await page.waitForLoadState('networkidle');
+    
+    /* 
     const products = page.locator(".card-body");
     const titles = await page.locator(".card-body b").allTextContents();
     console.log(titles);
@@ -72,6 +73,8 @@ test("Login Using API", async ({page}) => {
     const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
     console.log(orderId);
  
+*/
+
     await page.locator("button[routerlink*='myorders']").click();
     await page.locator("tbody").waitFor();
     const rows = await page.locator("tbody tr");
@@ -79,13 +82,13 @@ test("Login Using API", async ({page}) => {
   
     for (let i = 0; i < await rows.count(); ++i) {
        const rowOrderId = await rows.nth(i).locator("th").textContent();
-       if (orderId.includes(rowOrderId)) {
+       if (response.orderId.includes(rowOrderId)) {
           await rows.nth(i).locator("button").first().click();
           break;
        }
     }
     const orderIdDetails = await page.locator(".col-text").textContent();
-    expect(orderId.includes(orderIdDetails)).toBeTruthy();
+    expect(response.orderId.includes(orderIdDetails)).toBeTruthy();
   
  
  });
