@@ -20,6 +20,7 @@ test('Login', async() =>{
     const email = "anshika222@gmail.com";
     const productName = 'ADIDAS ORIGINAL';
     const page = await webContext.newPage();
+    
     await page.goto("https://rahulshettyacademy.com/client");
     const products =await page.locator(".card-body");
     const titles = await page.locator(".card-body b").allTextContents();
