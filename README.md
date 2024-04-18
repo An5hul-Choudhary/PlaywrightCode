@@ -1,0 +1,6 @@
+Welcome to the Playwright Repo...
+
+Here you will find the Playwright automation code using Javascript language.
+In this repo, i have the practice of my automation course of playwright and all the codes of my automation practice is updated here
+
+Thanks.....
