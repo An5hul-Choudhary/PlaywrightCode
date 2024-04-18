@@ -30,6 +30,7 @@ test('Login', async() =>{
             response,
             body,
         })
+        //intercepting response -APi response-> { playwright fakeresponse}->browser->render data on front end
     }
 )
     
