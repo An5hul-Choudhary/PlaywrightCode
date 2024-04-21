@@ -1,8 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const {LoginPage} = require('../PageObjects/LoginPage');
-const {DashboardPage} = require('../PageObjects/DashboardPage');
-const {CartPage} = require('../PageObjects/CartPage');
-const {PaymentPage} = require('../PageObjects/PaymentPage');
+const {POManager} = require('../PageObjects/POManager');
  
   
 test('@Client App login', async ({ page }) => {
@@ -11,20 +8,21 @@ test('@Client App login', async ({ page }) => {
    const password = "Iamking@000";
    const productName = 'ADIDAS ORIGINAL';
 
-   const loginPage = new LoginPage(page);
+   const poManager = new POManager(page);
 
+   const loginPage = poManager.getLoginPage();
    await loginPage.goto();
    await loginPage.validLogin(email, password);
   
-   const dashboardPage = new DashboardPage(page);
+   const dashboardPage = poManager.getDashboardPage();
    await dashboardPage.searchProduct(productName);
    await dashboardPage.navigateToCart();
 
-   const cartPage = new CartPage(page);
+   const cartPage = poManager.getCartPage();
    cartPage.checkAddedProduct();
    cartPage.checkOut();
  
-   const paymentPage = new PaymentPage(page);
+   const paymentPage = poManager.getPaymentPage();
    paymentPage.selectCountry();
  
    const dropdown = page.locator(".ta-results");
