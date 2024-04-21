@@ -19,45 +19,22 @@ test('@Client App login', async ({ page }) => {
    await dashboardPage.navigateToCart();
 
    const cartPage = poManager.getCartPage();
-   cartPage.checkAddedProduct();
-   cartPage.checkOut();
+   await cartPage.checkAddedProduct();
+   await cartPage.checkOut();
  
    const paymentPage = poManager.getPaymentPage();
-   paymentPage.selectCountry();
- 
-   const dropdown = page.locator(".ta-results");
-   await dropdown.waitFor();
-   const optionsCount = await dropdown.locator("button").count();
-   for (let i = 0; i < optionsCount; ++i) {
-      const text = await dropdown.locator("button").nth(i).textContent();
-      if (text === " India") {
-         await dropdown.locator("button").nth(i).click();
-         break;
-      }
-   }
- 
-   await expect(page.locator(".user__name [type='text']").first()).toHaveText(email);
-   await page.locator(".action__submit").click();
-   await expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ");
-   const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
+   await paymentPage.selectCountry();
+   await paymentPage.validatingEmail(email);
+  
+   const thankyouPage = poManager.getThankyouPage();
+   const orderId = await thankyouPage.validateOrderId();
    console.log(orderId);
+   await thankyouPage.myOrder();
 
-   await page.locator("button[routerlink*='myorders']").click();
-   await page.locator("tbody").waitFor();
-   const rows = await page.locator("tbody tr");
+   const orderDetailsPage = poManager.getOrderDetailsPage();
+   await orderDetailsPage.selectingOrderDetails(orderId);
+   await orderDetailsPage.validatingOrderDetails(orderId);
  
- 
-   for (let i = 0; i < await rows.count(); ++i) {
-      const rowOrderId = await rows.nth(i).locator("th").textContent();
-      if (orderId.includes(rowOrderId)) {
-         await rows.nth(i).locator("button").first().click();
-         break;
-      }
-   }
-   const orderIdDetails = await page.locator(".col-text").textContent();
-   expect(orderId.includes(orderIdDetails)).toBeTruthy();
- 
-
 });
  
  
