@@ -4,8 +4,9 @@ const {POManager} = require('../PageObjects/POManager');
 //JSON -> String -> JS object
 const dataSet = JSON.parse(JSON.stringify(require('../Utils/EndToEndPageObjectTestData.json')));
  
-for(const data of dataSet){
 
+for(const data of dataSet){
+//test.describe.configure({mode: 'parallel'});
 test(`@Client App login for ${data.productName}`, async ({ page }) => {
    //js file- Login js, DashboardPage
    const poManager = new POManager(page);
