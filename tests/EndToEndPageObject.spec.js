@@ -1,21 +1,19 @@
 const { test, expect } = require('@playwright/test');
 const {POManager} = require('../PageObjects/POManager');
+//JSON -> String -> JS object
+const dataSet = JSON.parse(JSON.stringify(require('../Utils/EndToEndPageObjectTestData.json')));
  
   
 test('@Client App login', async ({ page }) => {
    //js file- Login js, DashboardPage
-   const email = "anshika222@gmail.com";
-   const password = "Iamking@000";
-   const productName = 'ADIDAS ORIGINAL';
-
    const poManager = new POManager(page);
 
    const loginPage = poManager.getLoginPage();
    await loginPage.goto();
-   await loginPage.validLogin(email, password);
+   await loginPage.validLogin(dataSet.email, dataSet.password);
   
    const dashboardPage = poManager.getDashboardPage();
-   await dashboardPage.searchProduct(productName);
+   await dashboardPage.searchProduct(dataSet.productName);
    await dashboardPage.navigateToCart();
 
    const cartPage = poManager.getCartPage();
@@ -23,8 +21,8 @@ test('@Client App login', async ({ page }) => {
    await cartPage.checkOut();
  
    const paymentPage = poManager.getPaymentPage();
-   await paymentPage.selectCountry();
-   await paymentPage.validatingEmail(email);
+   await paymentPage.selectCountry("ind",  " India");
+   await paymentPage.validatingEmail(dataSet.email);
   
    const thankyouPage = poManager.getThankyouPage();
    const orderId = await thankyouPage.validateOrderId();

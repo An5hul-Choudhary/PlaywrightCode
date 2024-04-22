@@ -11,13 +11,13 @@ class PaymentPage{
         this.submitBtn = page.locator(".action__submit");
     }
 
-    async selectCountry(){
-        await this.country.pressSequentially("ind");
+    async selectCountry(searchingBy, country){
+        await this.country.pressSequentially(searchingBy);
         await this.dropdown.waitFor();
         const optionsCount = await this.buttons.count();
         for (let i = 0; i < optionsCount; ++i) {
            const text = await this.buttons.nth(i).textContent();
-           if (text === " India") {
+           if (text === country) {
               await this.buttons.nth(i).click();
               break;
            }
